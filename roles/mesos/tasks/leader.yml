@@ -9,6 +9,16 @@
   tags:
     - mesos
 
+- name: set quorum count
+  sudo: yes
+  template:
+    src: master-quorum.j2
+    dest: /etc/mesos-master/quorum
+  notify:
+    - restart mesos leader
+  tags:
+    - mesos
+
 - name: write leader credentials
   sudo: yes
   when: do_mesos_framework_auth|bool or do_mesos_follower_auth|bool
