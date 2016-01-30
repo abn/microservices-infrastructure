@@ -21,6 +21,15 @@
     - docker
     - bootstrap
 
+- name: configure docker network
+  sudo: yes
+  when: do_docker_network_config
+  template:
+    src: docker-network.sysconfig.j2
+    dest: /etc/sysconfig/docker-network
+  tags:
+    - docker
+
 - name: check if docker storage already set up with devicemapper
   sudo: yes
   shell: "test -f /etc/sysconfig/docker-storage-setup && . /etc/sysconfig/docker-storage-setup && echo ${STORAGE_DRIVER:-NOT_SET}"

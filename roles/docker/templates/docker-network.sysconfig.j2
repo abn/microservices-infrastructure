@@ -1,0 +1,4 @@
+# /etc/sysconfig/docker-network
+DOCKER_NETWORK_OPTIONS=
+{%- if docker_network_bridge is defined %} --bridge={{ docker_network_bridge }}{% endif -%}
+{%- if docker_network_bridge_ip is defined %} --bip={{ docker_network_bridge_ip }}{% endif -%}
