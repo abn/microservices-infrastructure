@@ -55,13 +55,18 @@ if [ "${me}" != "$leader" ]; then
 	# Not the leader. Set a watch on /v1/kv/secure/$me/restart. When that
 	# changes, restart consul
 	#
-	consul-cli kv-watch ${ccargs} secure/${me}/restart >/dev/nul
-	if [ $? -ne 0 ]; then
-		echo "Error watching restart key"
-		exit 1
-	fi
+	server=$(consul-cli agent-self ${ccargs}  | jq -r ".Config.Server")
+	if [ "${server}" == "true" ]; then
+		# if this is a server, we need to wait for the restart key
+		consul-cli kv-watch ${ccargs} secure/${me}/restart >/dev/null
 
-	consul-cli kv-delete ${ccargs} secure/${me}/restart
+		if [ $? -ne 0 ]; then
+			echo "Error watching restart key"
+			exit 1
+		fi
+
+	  consul-cli kv-delete ${ccargs} secure/${me}/restart
+	fi
 
 	systemctl restart consul
 
@@ -76,15 +81,17 @@ for i in $(consul-cli agent-members ${ccargs} | \
 		sort -r -t ':' -k 3); do
 	node=$(echo ${i} | cut -f 1 -d ':')
 	ip=$(echo ${i} | cut -f 2 -d ':')
+	role=$(echo ${i} | cut -f 3 -d ':')
 
 	if [ -z "${node}" -o -z "${ip}" ]; then
 		echo "Bad return from `consul-cli agent-members`: ${i}"
 		exit 1
 	fi
 
-	if [ "${ip}" != "${me}" ]; then
+	if [ "${role}" != "node" -a "${ip}" != "${me}" ]; then
 		consul-cli kv-write ${ccargs} secure/${ip}/restart restart
 		wait_for_upness ${node}
+		consul-cli kv-delete ${ccargs} secure/${ip}/restart restart
 	fi
 done
 
