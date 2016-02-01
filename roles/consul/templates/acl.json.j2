@@ -1,5 +1,5 @@
 { 
-{% if consul_is_server %}
+{% if consul_is_server|bool %}
     "acl_master_token": "{{ consul_acl_master_token }}",
     "acl_default_policy": "{{ consul_acl_default_policy }}",
     "acl_down_policy": "{{ consul_acl_down_policy }}",

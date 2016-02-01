@@ -29,6 +29,7 @@
     - openssh
     - policycoreutils-python
     - unzip
+    - jq
   tags:
     - bootstrap
 
