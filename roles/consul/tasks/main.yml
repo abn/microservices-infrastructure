@@ -38,6 +38,7 @@
     - reload consul
   tags:
     - consul
+    - consul-docker
 
 - name: deploy tls files
   sudo: yes
@@ -104,6 +105,8 @@
     - consul
 
 - include: nginx_proxy.yml
+  tags:
+    - consul-nginx
 
 # symlink to distributive checklist, register check with Consul
 - include: distributive.yml
