@@ -33,9 +33,14 @@ fi
 
 me=$(consul-cli agent-self ${ccargs} | jq -r .Member.Addr)
 leader=$(consul-cli status-leader ${ccargs} | cut -f 1 -d ':')
+server=$(consul-cli agent-self ${ccargs}  | jq -r ".Config.Server")
 
 if [ -z "${me}" ]; then
 	echo "Not a consul server."
+	exit 0
+elif [ "${server}" == "true" ]; then
+	# this is a client short-circuit restart
+	systemctl restart consul
 	exit 0
 fi
 
@@ -56,17 +61,13 @@ if [ "${me}" != "$leader" ]; then
 	# changes, restart consul
 	#
 	server=$(consul-cli agent-self ${ccargs}  | jq -r ".Config.Server")
-	if [ "${server}" == "true" ]; then
-		# if this is a server, we need to wait for the restart key
-		consul-cli kv-watch ${ccargs} secure/${me}/restart >/dev/null
-
-		if [ $? -ne 0 ]; then
-			echo "Error watching restart key"
-			exit 1
-		fi
-
-	  consul-cli kv-delete ${ccargs} secure/${me}/restart
+	consul-cli kv-watch ${ccargs} secure/${me}/restart >/dev/null
+	if [ $? -ne 0 ]; then
+		echo "Error watching restart key"
+		exit 1
 	fi
+
+	consul-cli kv-delete ${ccargs} secure/${me}/restart
 
 	systemctl restart consul
 

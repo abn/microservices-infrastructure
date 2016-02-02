@@ -40,6 +40,14 @@
     - consul
     - consul-docker
 
+- name: ensure consul ssl dir exists
+  sudo: yes
+  file:
+    path: /etc/consul/ssl
+    state: directory
+  tags:
+    - consul
+
 - name: deploy tls files
   sudo: yes
   copy:
