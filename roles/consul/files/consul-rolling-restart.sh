@@ -38,7 +38,7 @@ server=$(consul-cli agent-self ${ccargs}  | jq -r ".Config.Server")
 if [ -z "${me}" ]; then
 	echo "Not a consul server."
 	exit 0
-elif [ "${server}" == "true" ]; then
+elif [ "${server}" == "false" ]; then
 	# this is a client short-circuit restart
 	systemctl restart consul
 	exit 0
