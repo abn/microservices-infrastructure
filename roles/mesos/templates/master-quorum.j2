@@ -1,1 +1,1 @@
-{{ groups[mesos_leaders_group]|count }}
+{{ groups[mesos_leaders_group]|count // 2 + 1 }}
