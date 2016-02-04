@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: all:!role=consul-agent
   serial: 1
   gather_facts: no
   tasks:
