@@ -17,6 +17,7 @@
     - restart logstash
   tags:
     - logstash
+    - logstash-configure
 
 - name: ensure logstash docker image is present
   sudo: yes
