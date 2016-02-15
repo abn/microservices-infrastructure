@@ -1,6 +1,6 @@
 /var/log/zookeeper/* {
         daily
-        rotate 7
+        rotate 2
         create
         missingok
         compress

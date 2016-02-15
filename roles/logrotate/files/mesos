@@ -1,6 +1,6 @@
 /var/log/mesos/* {
         daily
-        rotate 7
+        rotate 2
         create
         missingok
         compress

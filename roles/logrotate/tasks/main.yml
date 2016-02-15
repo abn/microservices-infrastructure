@@ -9,12 +9,12 @@
   tags:
     - logrotate
 
-- name: set logrotate retention period to 7 days
+- name: set logrotate retention period to 2 days
   sudo: yes
   lineinfile:
     dest: /etc/logrotate.conf
-    regexp: '^rotate 4'
-    line: "rotate 7"
+    regexp: '^rotate '
+    line: "rotate 2"
     backrefs: yes
   tags:
     - logrotate
