@@ -10,6 +10,7 @@
   service:
     name: collectd
     state: restarted
+  ignore_errors: yes
 
 - name: restart rsyslog
   sudo: yes
